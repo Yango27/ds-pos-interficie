@@ -103,10 +103,10 @@ public class Main {
 
     buttonNewSale.setBackground(Color.CYAN);
 
+    Mediator mediator = new MediatorPos(null, pointOfSale, statusPanel, amountListener);
+
     NewSaleListener newSaleListener =
-        new NewSaleListener(
-            pointOfSale,
-            statusPanel);
+        new NewSaleListener(mediator);
 
     buttonNewSale.addActionListener(
         newSaleListener);
@@ -119,9 +119,7 @@ public class Main {
     buttonReceipt.setBackground(Color.YELLOW);
 
     PrintReceiptListener printReceiptListener =
-        new PrintReceiptListener(
-            pointOfSale,
-            statusPanel);
+        new PrintReceiptListener(mediator);
 
     buttonReceipt.addActionListener(
         printReceiptListener);
@@ -134,10 +132,7 @@ public class Main {
     buttonPay.setBackground(Color.ORANGE);
 
     PayListener payListener =
-        new PayListener(
-            pointOfSale,
-            amountListener,
-            statusPanel);
+        new PayListener(mediator);
 
     buttonPay.addActionListener(payListener);
 
@@ -185,10 +180,7 @@ public class Main {
           }
 
           ProductListener productListener =
-              new ProductListener(
-                  productName,
-                  pointOfSale,
-                  statusPanel);
+              new ProductListener(productName, mediator);
 
           buttonProduct.addActionListener(
               productListener);
@@ -199,50 +191,6 @@ public class Main {
           frame.add(buttonProduct);
 
           nProduct++;
-        }
-      }
-    }
-
-    //
-    // Table buttons
-    //
-
-    int numTables = 6;
-    assert numTables <=
-        NUM_ROWS_TABLES * NUM_COLS_TABLES;
-
-    int nTable = 0;
-
-    for (int row = 0; row < NUM_ROWS_TABLES; row++) {
-
-      for (int col = 0; col < NUM_COLS_TABLES; col++) {
-
-        if (nTable < numTables) {
-
-          String idTable =
-              "T" + (row + 1) + (col + 1);
-
-          JButton table =
-              makeButton(
-                  row,
-                  col,
-                  idTable);
-
-          TableListener tableListener =
-              new TableListener(
-                  table,
-                  newSaleListener,
-                  payListener,
-                  printReceiptListener,
-                  productListeners,
-                  statusPanel);
-
-          table.addActionListener(
-              tableListener);
-
-          frame.add(table);
-
-          nTable++;
         }
       }
     }
@@ -261,5 +209,46 @@ public class Main {
         JFrame.EXIT_ON_CLOSE);
 
     frame.setVisible(true);
+
+    //
+    // Table buttons
+    //
+
+    int numTables = 6;
+    assert numTables <=
+            NUM_ROWS_TABLES * NUM_COLS_TABLES;
+
+    int nTable = 0;
+
+    for (int row = 0; row < NUM_ROWS_TABLES; row++) {
+
+      for (int col = 0; col < NUM_COLS_TABLES; col++) {
+
+        if (nTable < numTables) {
+
+          String idTable =
+                  "T" + (row + 1) + (col + 1);
+
+          JButton table =
+                  makeButton(
+                          row,
+                          col,
+                          idTable);
+
+          TableListener tableListener =
+                  new TableListener(
+                          table,
+                          statusPanel,
+                          mediator);
+
+          table.addActionListener(
+                  tableListener);
+
+          frame.add(table);
+
+          nTable++;
+        }
+      }
+    }
   }
 }
