@@ -1,0 +1,96 @@
+@startuml
+'https://plantuml.com/class-diagram
+skinparam classAttributeIconSize 0
+
+interface Mediator {
+    + {abstract} tableSelected(table : TableListener, tableId : String, hasASale : boolean, saleId : int)
+    + {abstract} newSale()
+    + {abstract} productSelected(productName : String)
+    + {abstract} printReceipt()
+    + {abstract} pay()
+}
+
+class MediatorPos implements Mediator {
+    + tableSelected(table : TableListener, tableId : String, hasASale : boolean, saleId : int)
+    + newSale()
+    + productSelected(productName : String)
+    + printReceipt()
+    + pay()
+}
+
+class NewSaleListener {
+    + actionPerformed(av : ActionEvent)
+}
+
+class ProductListener {
+    - productName : String
+    + actionPerformed(av : ActionEvent)
+}
+
+class PrintReceiptListener {
+    + actionPerformed(av : ActionEvent)
+}
+
+class PayListener {
+    + actionPerformed(av : ActionEvent)
+}
+
+class TableListener {
+    - {static} selectedButton : JButton
+    - table : JButton
+    - saleId : int
+    - hasASale : boolean
+    - numProducts : int
+    + actionPerformed(av : ActionEvent)
+    + getSaleId() : int
+    + setSaleId(saleId : int)
+    + hasASale() : boolean
+    + clearSale()
+    + getTableId() : String
+    + increaseNumProducts()
+    + getNumProducts() : int
+}
+
+class AmountListener {
+    - textField : JTextField
+    + actionPerformed(av : ActionEvent)
+    + getPaidAmount() : double
+    + setText(text : String)
+}
+
+class StatusPanel {
+    - currentTable : String
+    - currentSale : String
+    - currentNumProducts : int
+    - currentState : String
+    + setTable(table : String)
+    + setSale(sale : String)
+    + setState(state : String)
+    + setNumProducts(currentNumProducts : int)
+    + refresh(message : String)
+}
+
+class PointOfSale {
+    + makeNewSale() : int
+    + addLineItemToSale(idSale : int, \n\tproductName : String, quantity : int)
+    + printReceiptOfSale(saleId : int)
+    + payOneSaleCash(saleId : int, amountHanded : double)
+    + printPayment(saleId : int)
+    + isSalePaid(saleId : int) : boolean
+    + isAmountHandedEnough(saleId : int, amountHanded : double) : boolean
+    + saleHasProducts(saleId : int) : boolean
+    + getProductNames() : ArrayList<String>
+}
+
+NewSaleListener --> "1" Mediator : mediator
+ProductListener --> "1" Mediator : mediator
+PrintReceiptListener --> "1" Mediator : mediator
+PayListener --> "1" Mediator : mediator
+TableListener --> "1" Mediator : mediator
+
+MediatorPos --> "0..1" TableListener : listenerCurrentTable
+MediatorPos --> "1" StatusPanel : statusPanel
+MediatorPos --> "1" AmountListener : amountListener
+MediatorPos --> "1" PointOfSale : pointOfSale
+
+@enduml

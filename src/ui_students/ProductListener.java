@@ -8,17 +8,47 @@ import java.awt.event.ActionListener;
 public class ProductListener implements ActionListener {
 
   private String productName;
-  private Mediator mediator;
+  private TableListener listenerCurrentTable;
+  private PointOfSale pointOfSale;
+  private StatusPanel statusPanel;
 
-  public ProductListener(String productName, Mediator mediator) {
+  public ProductListener(String productName,
+                         PointOfSale pointOfSale,
+                         StatusPanel statusPanel) {
 
     this.productName = productName;
-    this.mediator = mediator;
+    this.pointOfSale = pointOfSale;
+    this.statusPanel = statusPanel;
+  }
+
+  public void setListenerCurrentTable(TableListener tableListener) {
+    listenerCurrentTable = tableListener;
   }
 
   @Override
   public void actionPerformed(ActionEvent actionEvent) {
 
-    mediator.productSelected(productName);
+    if (listenerCurrentTable != null) {
+
+      if (listenerCurrentTable.hasASale()) {
+
+        int idSale = listenerCurrentTable.getSaleId();
+
+        pointOfSale.addLineItemToSale(
+            idSale,
+            productName,
+            1);
+
+        statusPanel.increaseNumProducts();
+
+        statusPanel.refresh(
+            "Added product: " + productName);
+
+      } else {
+
+        statusPanel.refresh(
+            "Open a sale before adding products");
+      }
+    }
   }
 }

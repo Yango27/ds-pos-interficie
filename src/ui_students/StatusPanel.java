@@ -28,8 +28,8 @@ public class StatusPanel extends JTextArea {
     currentState = state;
   }
 
-  public void setNumProducts(int currentNumProducts) {
-    this.currentNumProducts = currentNumProducts;
+  public void increaseNumProducts() {
+    currentNumProducts++;
   }
 
   public void refresh(String message) {

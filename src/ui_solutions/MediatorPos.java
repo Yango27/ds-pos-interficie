@@ -1,10 +1,11 @@
-package ui_students;
+package ui_solutions;
 
 import pos_creditcard.PointOfSale;
 
-import java.awt.*;
+// inherits from Mediator, Mediator pattern explained in Mediator.java
 
 public class MediatorPos implements Mediator{
+    // these classes are the receivers, they receive the orders that the listeners start
     private TableListener listenerCurrentTable;
     private PointOfSale pointOfSale;
     private StatusPanel statusPanel;
@@ -43,6 +44,7 @@ public class MediatorPos implements Mediator{
 
                 statusPanel.setSale(String.valueOf(saleId));
                 statusPanel.setState("UNPAID");
+                // set the num products to 0, in case the last sale was not reseted
                 statusPanel.setNumProducts(0);
                 statusPanel.refresh("New sale created");
 
@@ -165,12 +167,11 @@ public class MediatorPos implements Mediator{
                     amountListener.setText("0.0 €");
 
                     statusPanel.setState("PAID");
-
+                    statusPanel.setNumProducts(0);
                     statusPanel.refresh(
                             "Sale paid");
 
                     listenerCurrentTable.clearSale();
-                    statusPanel.setNumProducts(0);
 
                 } else {
 

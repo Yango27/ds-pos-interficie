@@ -16,18 +16,32 @@ class TableListener implements ActionListener {
 
   private boolean hasASale = false;
 
-  private int numProducts;
+  private NewSaleListener newSaleListener;
 
-  private Mediator mediator;
+  private PayListener payListener;
+
+  private PrintReceiptListener printReceiptListener;
+
+  private ArrayList<ProductListener> productListeners;
+
+  private StatusPanel statusPanel;
 
   public TableListener(
       JButton table,
-      StatusPanel statusPanel,
-      Mediator mediator) {
+      NewSaleListener newSaleListener,
+      PayListener payListener,
+      PrintReceiptListener printReceiptListener,
+      ArrayList<ProductListener> productListeners,
+      StatusPanel statusPanel) {
 
     this.table = table;
-    this.mediator = mediator;
-    this.numProducts = 0;
+    this.newSaleListener = newSaleListener;
+    this.payListener = payListener;
+    this.printReceiptListener =
+        printReceiptListener;
+    this.productListeners =
+        productListeners;
+    this.statusPanel = statusPanel;
   }
 
   @Override
@@ -42,7 +56,37 @@ class TableListener implements ActionListener {
 
     selectedButton = table;
 
-    mediator.tableSelected(this, getTableId(), hasASale, saleId);
+    newSaleListener.setListenerCurrentTable(this);
+
+    printReceiptListener
+        .setListenerCurrentTable(this);
+
+    payListener
+        .setListenerCurrentTable(this);
+
+    for (ProductListener productListener :
+        productListeners) {
+
+      productListener
+          .setListenerCurrentTable(this);
+    }
+
+    statusPanel.setTable(getTableId());
+
+    if (hasASale) {
+
+      statusPanel.setSale(
+          String.valueOf(saleId));
+
+      statusPanel.setState("UNPAID");
+
+    } else {
+
+      statusPanel.setSale("-");
+      statusPanel.setState("NO SALE");
+    }
+
+    statusPanel.refresh("Table selected");
   }
 
   public int getSaleId() {
@@ -52,7 +96,6 @@ class TableListener implements ActionListener {
   public void setSaleId(int saleId) {
     this.saleId = saleId;
     hasASale = true;
-    numProducts = 0;
   }
 
   public boolean hasASale() {
@@ -65,13 +108,5 @@ class TableListener implements ActionListener {
 
   public String getTableId() {
     return table.getText();
-  }
-
-  public void increaseNumProducts(){
-    numProducts++;
-  }
-
-  public int getNumProducts(){
-    return numProducts;
   }
 }
